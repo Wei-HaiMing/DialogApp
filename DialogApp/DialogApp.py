@@ -5,12 +5,13 @@ from typing import Tuple, List, Dict
 from rxconfig import config
 
 
+# The back end of the app that holds all of the data to be displayed/changed
 class State(rx.State):
     """The app state."""
     title = "Hello World"
-    categories: List[Dict[str,str]] = [{"name": "Mark", "desc": "YouTuber"}, {"name": "Wade", "desc": "And Friends"}]
+    categories: List[Dict[str,str]] = [{"name": "Mark", "desc": "YouTuber"}, {"name": "Wade", "desc": "And Friends"}, {"name": "Bob", "desc": "And Friends"}]
 
-    # @staticmethod
+# returns a row with the category name, description, and a dialog
 def disperseCategories(category: Dict[str, str]) -> rx.Component:
     return rx.table.row(
         rx.table.row_header_cell(category["name"]),
@@ -18,6 +19,8 @@ def disperseCategories(category: Dict[str, str]) -> rx.Component:
         getDialog(),
     )
 
+# returns a dialog with an open button, a description, and a close button
+# Dialog is formatted in a row format
 def getDialog() -> rx.Component:
     return rx.vstack(
         rx.dialog.root(
@@ -34,12 +37,12 @@ def getDialog() -> rx.Component:
             
         ),
         spacing="5",
-        justify="row",
+        justify="row", # <- this is what makes the format into a row
+        
         # min_height="85vh",
     ), # end vstack
 
-
-
+# The front end of the app that displays/renders the data
 def index() -> rx.Component:
     # Welcome Page (Index)
     return rx.container(
@@ -53,23 +56,17 @@ def index() -> rx.Component:
                     ), # end row
                 ), # end header
                 rx.table.body(
-                    # rx.table.row(
-                    #     rx.table.row_header_cell("Mr. Yeet"),
-                    #     rx.table.cell("Bruh"),
-                        
-                        
-                    # ),
-                    # rx.foreach(State.categories, lambda category: State.disperseCategories(category)),
-                    rx.foreach(State.categories, disperseCategories)
+                    rx.foreach(State.categories, disperseCategories) # <- this foreach component calls disperseCategories
+                                                                     # for each element in State.categories and then renders them
                 ), # end table body
                 width="100%",
             ), # end table root
 
-            rx.color_mode.button(position="bottom-left"),
+            rx.color_mode.button(position="bottom-left"), # <- this is the color mode button to turn on and off dark mode
             
         ), # end flex
     ) # end container
 
 
-app = rx.App()
-app.add_page(index)
+app = rx.App() # Creates intance of the app
+app.add_page(index) # Adds the index page to the app
