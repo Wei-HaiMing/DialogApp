@@ -1,5 +1,6 @@
 # DialogApp
 Authors: Armando Vega, Dylan Tran, Philip-Pearce Pearson
+
 To run:
 1) Set up your virtual envrionment
    * Type into the terminal: python3.12 -m venv venv
