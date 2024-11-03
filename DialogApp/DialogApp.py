@@ -30,6 +30,8 @@ class State(rx.State):
         form submissions can apply to other categories. The change is then made. If there is no change and the submit button is 
         simply pressed, then no change is made. 
         """
+        # print(category1)
+        # print(data)
         index = -1 # variable to determine the index of the selected category to edit
         
         for i in range(len(self.categories)): # loop to actually compare changed data to categories
@@ -39,36 +41,51 @@ class State(rx.State):
             data_name = "" 
             data_desc = ""
             data_id = ""
-            
+            # print(cat_name, cat_desc, cat_id)
+
             # checking to see if the category value is in the data dictionary before assigning values
             if cat_name in data: 
                 if data[cat_name] == "": # assigns empty values to the empty_{val} format for checking
                     data[cat_name] = f"empty_{cat_name}"
                     data_name = getKey(data, data[cat_name])
-            
+                else:
+                    data_name = getKey(data, data[cat_name])
+                    
             # etc. etc.
             if cat_desc in data:
                 if data[cat_desc] == "":
                     data[cat_desc] = f"empty_{cat_desc}"
+                    data_desc = getKey(data, data[cat_desc])
+                else:
                     data_desc = getKey(data, data[cat_desc])
                     
             if cat_id in data:
                 if data[cat_id] == "":
                     data[cat_id] = f"empty_{cat_id}"
                     data_id = getKey(data, data[cat_id])
-                    
+                else:
+                    data_id = getKey(data, data[cat_id])
+
+            # print(self.categories[i]["name"], self.categories[i]["desc"], self.categories[i]["id"])
+            # print(data_name, data_desc, data_id)
+
             # final check of each key pair value of data to compare against category
-            if self.categories[i]["name"] == data_name or self.categories[i]["desc"] == data_desc or self.categories[i]["id"] == data_id:
+            if self.categories[i]["name"] == data_name and self.categories[i]["desc"] == data_desc and self.categories[i]["id"] == data_id:
+                print(self.categories[i]["name"], self.categories[i]["desc"], self.categories[i]["id"])
+                print(data_name, data_desc, data_id)
                 index = i
                 break
         
         # assigns corresponding category
         category = self.categories[index]
         
+        # print(data)
+        # print(category)
         # assigns values to be changed to actual self.categories
         for key, val in category.items():
-            if not data[val] == f"empty_{val}":
-                category[key] = data[val]
+            if not key == "parent":
+                if not data[val] == f"empty_{val}":
+                    category[key] = data[val]
                 
 
 def getKey(my_dict: Dict[str, str], val: str) -> str:
@@ -95,7 +112,6 @@ def disperseCategories(category: Dict[str, str]) -> rx.Component:
                 ),
                 rx.dialog.content(
                     rx.dialog.title("Edit Category"),
-                    # rx.dialog.description("This is a dialog lmao"),
                     rx.vstack(
                         rx.form( # start of the form for each dialog, they are unique dialogs for each category
                             rx.vstack(
@@ -127,7 +143,7 @@ def disperseCategories(category: Dict[str, str]) -> rx.Component:
                                 rx.button("Submit", type="submit"),
                             ),
                             on_submit = State.handle_submit, 
-                            reset_on_submit = True,
+                            reset_on_submit = False,
                         ),
                         # rx.divider(),
                         # rx.text(State.categories.to_string())
